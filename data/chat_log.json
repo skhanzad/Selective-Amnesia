@@ -1,0 +1,21 @@
+[
+  {
+    "timestamp": "2026-06-26T19:19:24.936428+00:00",
+    "user": "hello",
+    "assistant": null,
+    "error": "404 Client Error: Not Found for url: http://localhost:11434/api/embed",
+    "graph_after": null
+  },
+  {
+    "timestamp": "2026-06-26T19:22:18.526148+00:00",
+    "user": "asdafdgds",
+    "assistant": "Please provide me with the knowledge graph context! I need the nodes, edges, labels, and attribute values to be able to answer your questions accurately. \n\nFor example, you could give me a knowledge graph like this:\n\n* **Nodes:**\n    * Person(name=\"Alice\", age=30)\n    * Person(name=\"Bob\", age=25)\n    * Movie(title=\"The Matrix\")\n* **Edges:**\n    * Likes(Person(Alice), Movie(The Matrix)) \n    * Knows(Person(Alice), Person(Bob))\n\nOnce you provide the context, I'll be happy to help! \ud83d\ude0a  \n",
+    "graph_after": {
+      "node_count": 0,
+      "edge_count": 0,
+      "turns": 1,
+      "nodes": [],
+      "edges": []
+    }
+  }
+]

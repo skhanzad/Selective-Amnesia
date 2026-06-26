@@ -21,9 +21,15 @@ Built with **LangGraph** for the main flow, **Gemma2 via Ollama** as the LLM, an
 ```bash
 ollama pull gemma2
 ollama pull nomic-embed-text
-pip install -r requirements.txt
+uv sync
 mkdir -p data/benchmarks
 ```
+
+Install [uv](https://docs.astral.sh/uv/) if needed: `curl -LsSf https://astral.sh/uv/install.sh | sh`
+
+Run commands through the project venv with `uv run`, e.g. `uv run python main.py`.
+
+Alternatively, use pip: `pip install -r requirements.txt`
 
 ### Running the live chat (`main.py`)
 
