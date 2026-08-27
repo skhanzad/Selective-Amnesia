@@ -1,10 +1,10 @@
 from collections import deque
 from datetime import datetime, timezone
 
-from graph.graph_manager import _load_graph, _save_graph
+from graph.graph_manager import _total_turns
 
 RETRIEVAL_THRESHOLD = 0.75
-TOP_K = 10
+TOP_K = 5
 # Labels that are too generic to be useful retrieval roots on their own.
 # The user node connects to everything and floods BFS, crowding out specific nodes.
 _GENERIC_LABELS = {"Person"}
@@ -30,14 +30,18 @@ def build_adjacency(graph: dict) -> dict[str, list[str]]:
 def rank_candidates(
     candidate_lists: list[list[tuple[str, float]]],
     graph: dict | None = None,
+    extra_ids: list[str] | None = None,
 ) -> list[str]:
     """
     Merge per-entity candidate lists: keep the highest score per node,
     filter below RETRIEVAL_THRESHOLD, sort descending, return top-k node IDs.
     Generic hub nodes (Person) are deprioritised — appended after specific nodes
     so they only fill remaining slots, preventing BFS from flooding the cap.
+    extra_ids are title-index hits injected directly at maximum score.
     """
     best: dict[str, float] = {}
+    for node_id in extra_ids or []:
+        best[node_id] = 1.0
     for candidates in candidate_lists:
         for node_id, score in candidates:
             if score >= RETRIEVAL_THRESHOLD and score > best.get(node_id, -1.0):
@@ -46,8 +50,16 @@ def rank_candidates(
     ranked = sorted(best.items(), key=lambda x: x[1], reverse=True)
 
     if graph:
-        specific = [nid for nid, _ in ranked if graph["nodes"].get(nid, {}).get("label") not in _GENERIC_LABELS]
-        generic = [nid for nid, _ in ranked if graph["nodes"].get(nid, {}).get("label") in _GENERIC_LABELS]
+        specific = [
+            nid
+            for nid, _ in ranked
+            if graph["nodes"].get(nid, {}).get("label") not in _GENERIC_LABELS
+        ]
+        generic = [
+            nid
+            for nid, _ in ranked
+            if graph["nodes"].get(nid, {}).get("label") in _GENERIC_LABELS
+        ]
         return (specific + generic)[:TOP_K]
 
     return [node_id for node_id, _ in ranked[:TOP_K]]
@@ -105,12 +117,15 @@ def collect_subgraph(
 # ── Access metadata ────────────────────────────────────────────────────────────
 
 
-def update_access(graph: dict, node_ids: set[str]) -> None:
-    now = datetime.now(timezone.utc).isoformat()
+def update_access(graph: dict, node_ids: set[str], now: datetime | None = None) -> None:
+    ts = (now or datetime.now(timezone.utc)).isoformat()
+    total = _total_turns(graph)
     for node_id in node_ids:
         if node_id in graph["nodes"]:
-            graph["nodes"][node_id]["access_count"] += 1
-            graph["nodes"][node_id]["last_accessed_at"] = now
+            node = graph["nodes"][node_id]
+            node["access_count"] += 1
+            node["last_accessed_at"] = ts
+            node["turns_at_last_access"] = total
 
 
 # ── Serialisation ──────────────────────────────────────────────────────────────
@@ -140,7 +155,11 @@ def serialize_subgraph(
     for node in nodes.values():
         attrs_str = ""
         if node.get("attributes"):
-            attrs_str = " {" + ", ".join(f"{k}: {v}" for k, v in node["attributes"].items()) + "}"
+            attrs_str = (
+                " {"
+                + ", ".join(f"{k}: {v}" for k, v in node["attributes"].items())
+                + "}"
+            )
         content_str = f" ({node['content']})" if node.get("content") else ""
         lines.append(f"[{node['label']}] {node['title']}{content_str}{attrs_str}")
 
@@ -152,7 +171,11 @@ def serialize_subgraph(
         tgt_title = tgt_node["title"] if tgt_node else edge["target"]
         attrs_str = ""
         if edge.get("attributes"):
-            attrs_str = " {" + ", ".join(f"{k}: {v}" for k, v in edge["attributes"].items()) + "}"
+            attrs_str = (
+                " {"
+                + ", ".join(f"{k}: {v}" for k, v in edge["attributes"].items())
+                + "}"
+            )
         lines.append(f"{src_title} -[{edge['relationship']}{attrs_str}]-> {tgt_title}")
 
     return "\n".join(lines)

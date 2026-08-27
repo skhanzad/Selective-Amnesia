@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from graph.embedder import get_embedding, cosine_similarity
+from graph.embedder import cosine_similarity
 
 DEDUP_THRESHOLD = 0.92
 
@@ -14,10 +14,21 @@ GRAPH_PATH = Path(__file__).parent.parent / "graph.json"
 # ── Graph I/O ──────────────────────────────────────────────────────────────────
 
 
+def empty_graph() -> dict:
+    return {
+        "nodes": {},
+        "edges": {},
+        "vector_index": {},
+        "attribute_index": {},
+        "title_index": {},
+        "sessions": {},
+    }
+
+
 def _load_graph() -> dict:
     if GRAPH_PATH.exists():
         return json.loads(GRAPH_PATH.read_text(encoding="utf-8"))
-    return {"nodes": {}, "edges": {}, "vector_index": {}, "attribute_index": {}, "sessions": {}}
+    return empty_graph()
 
 
 def _save_graph(graph: dict) -> None:
@@ -27,11 +38,12 @@ def _save_graph(graph: dict) -> None:
 # ── Session ────────────────────────────────────────────────────────────────────
 
 
-def create_session(graph: dict) -> str:
+def create_session(graph: dict, created_at: datetime | None = None) -> str:
     session_id = str(uuid.uuid4())
+    ts = (created_at or datetime.now(timezone.utc)).isoformat()
     graph["sessions"][session_id] = {
         "id": session_id,
-        "created_at": datetime.now(timezone.utc).isoformat(),
+        "created_at": ts,
         "prompt_count": 0,
     }
     return session_id
@@ -44,18 +56,47 @@ def increment_prompt_count(graph: dict, session_id: str) -> None:
 # ── Date normalisation ─────────────────────────────────────────────────────────
 
 _MONTH_NAMES = {
-    "january": 1, "february": 2, "march": 3, "april": 4,
-    "may": 5, "june": 6, "july": 7, "august": 8,
-    "september": 9, "october": 10, "november": 11, "december": 12,
-    "jan": 1, "feb": 2, "mar": 3, "apr": 4,
-    "jun": 6, "jul": 7, "aug": 8, "sep": 9, "sept": 9,
-    "oct": 10, "nov": 11, "dec": 12,
+    "january": 1,
+    "february": 2,
+    "march": 3,
+    "april": 4,
+    "may": 5,
+    "june": 6,
+    "july": 7,
+    "august": 8,
+    "september": 9,
+    "october": 10,
+    "november": 11,
+    "december": 12,
+    "jan": 1,
+    "feb": 2,
+    "mar": 3,
+    "apr": 4,
+    "jun": 6,
+    "jul": 7,
+    "aug": 8,
+    "sep": 9,
+    "sept": 9,
+    "oct": 10,
+    "nov": 11,
+    "dec": 12,
 }
 
 _WEEKDAY_NAMES = {
-    "monday": 0, "tuesday": 1, "wednesday": 2, "thursday": 3,
-    "friday": 4, "saturday": 5, "sunday": 6,
-    "mon": 0, "tue": 1, "wed": 2, "thu": 3, "fri": 4, "sat": 5, "sun": 6,
+    "monday": 0,
+    "tuesday": 1,
+    "wednesday": 2,
+    "thursday": 3,
+    "friday": 4,
+    "saturday": 5,
+    "sunday": 6,
+    "mon": 0,
+    "tue": 1,
+    "wed": 2,
+    "thu": 3,
+    "fri": 4,
+    "sat": 5,
+    "sun": 6,
 }
 
 
@@ -71,18 +112,34 @@ def normalize_date(raw_date: str, session_created_at: str) -> dict:
 
     # yesterday / today / tomorrow
     if s == "yesterday":
-        return {"date": (anchor - timedelta(days=1)).date().isoformat(), "date_approximate": False, "date_raw": None}
+        return {
+            "date": (anchor - timedelta(days=1)).date().isoformat(),
+            "date_approximate": False,
+            "date_raw": None,
+        }
     if s == "today":
-        return {"date": anchor.date().isoformat(), "date_approximate": False, "date_raw": None}
+        return {
+            "date": anchor.date().isoformat(),
+            "date_approximate": False,
+            "date_raw": None,
+        }
     if s == "tomorrow":
-        return {"date": (anchor + timedelta(days=1)).date().isoformat(), "date_approximate": False, "date_raw": None}
+        return {
+            "date": (anchor + timedelta(days=1)).date().isoformat(),
+            "date_approximate": False,
+            "date_raw": None,
+        }
 
     # last <weekday>  e.g. "last saturday"
     m = re.match(r"last\s+(\w+)", s)
     if m and m.group(1) in _WEEKDAY_NAMES:
         target_wd = _WEEKDAY_NAMES[m.group(1)]
         days_back = (anchor.weekday() - target_wd) % 7 or 7
-        return {"date": (anchor - timedelta(days=days_back)).date().isoformat(), "date_approximate": False, "date_raw": None}
+        return {
+            "date": (anchor - timedelta(days=days_back)).date().isoformat(),
+            "date_approximate": False,
+            "date_raw": None,
+        }
 
     # <N> days/weeks/months/years ago
     m = re.match(r"(\d+)\s+(day|week|month|year)s?\s+ago", s)
@@ -100,7 +157,11 @@ def normalize_date(raw_date: str, session_created_at: str) -> dict:
             result = anchor.replace(year=year, month=month)
         else:  # year
             result = anchor.replace(year=anchor.year - n)
-        return {"date": result.date().isoformat(), "date_approximate": False, "date_raw": None}
+        return {
+            "date": result.date().isoformat(),
+            "date_approximate": False,
+            "date_raw": None,
+        }
 
     # approximate: "a few days ago", "recently", "a while ago"
     if re.search(r"\b(few|couple|recent|while|some time)\b", s):
@@ -121,7 +182,11 @@ def normalize_date(raw_date: str, session_created_at: str) -> dict:
                 candidate = datetime(year, month_num, day, tzinfo=timezone.utc)
                 if candidate > anchor:
                     candidate = candidate.replace(year=year - 1)
-                return {"date": candidate.date().isoformat(), "date_approximate": False, "date_raw": None}
+                return {
+                    "date": candidate.date().isoformat(),
+                    "date_approximate": False,
+                    "date_raw": None,
+                }
             except ValueError:
                 pass
 
@@ -141,35 +206,11 @@ def build_descriptor(label: str, title: str, content: str | None = None) -> str:
 # ── Attribute index helpers ────────────────────────────────────────────────────
 
 
-def _index_attributes(graph: dict, entity_id: str, attributes: dict) -> None:
-    for key, val in attributes.items():
-        if isinstance(val, dict):
-            raw_val = val.get("value")
-            promotable = val.get("promotable", False)
-        else:
-            raw_val = val
-            promotable = False
-
-        if promotable and raw_val is not None:
-            str_val = str(raw_val)
-            graph["attribute_index"].setdefault(str_val, entity_id)
-
-
 # ── Core ingest ────────────────────────────────────────────────────────────────
 
 
 def _flatten_attributes(attributes: dict) -> dict:
-    """
-    Convert nested attribute dicts like {value: ..., promotable: ...} to flat
-    scalar values for storage. The promotable flag is used for indexing only.
-    """
-    flat = {}
-    for key, val in attributes.items():
-        if isinstance(val, dict) and "value" in val:
-            flat[key] = val["value"]
-        else:
-            flat[key] = val
-    return flat
+    return dict(attributes)
 
 
 def search_similar(graph: dict, vector: list[float]) -> list[tuple[str, float]]:
@@ -185,25 +226,57 @@ def search_similar(graph: dict, vector: list[float]) -> list[tuple[str, float]]:
     return results
 
 
-def _merge_node(graph: dict, node_id: str, new_content: str | None, new_attrs: dict) -> None:
+def _merge_node(
+    graph: dict, node_id: str, new_content: str | None, new_attrs: dict
+) -> None:
     """Merge new content and attributes into an existing node without overwriting."""
     node = graph["nodes"][node_id]
     if new_content and not node.get("content"):
         node["content"] = new_content
-    for k, v in new_attrs.items():
-        if k not in node["attributes"]:
-            node["attributes"][k] = v
+    node["attributes"].update(new_attrs)
 
 
 def _process_raw_dates(raw_attrs: dict, session_created_at: str) -> dict:
     """Normalise any raw_date key in-place and return the modified dict."""
     if "raw_date" in raw_attrs:
-        raw_val = raw_attrs.pop("raw_date")
-        raw_str = raw_val["value"] if isinstance(raw_val, dict) else raw_val
+        raw_str = raw_attrs.pop("raw_date")
+        if not isinstance(raw_str, str):
+            return raw_attrs
         if raw_str is not None:
             date_result = normalize_date(raw_str, session_created_at)
             raw_attrs.update({k: v for k, v in date_result.items() if v is not None})
     return raw_attrs
+
+
+def _total_turns(graph: dict) -> int:
+    return sum(s["prompt_count"] for s in graph["sessions"].values())
+
+
+def summarize_graph(graph: dict) -> str:
+    """Compact text summary of existing nodes and edges for context-aware extraction."""
+    if not graph.get("nodes"):
+        return ""
+    lines = ["=== Existing Knowledge ===", "Nodes:"]
+    for node in graph["nodes"].values():
+        attrs = node.get("attributes", {})
+        attr_str = (
+            (" {" + ", ".join(f"{k}: {v}" for k, v in attrs.items()) + "}")
+            if attrs
+            else ""
+        )
+        lines.append(f"  [{node['label']}] {node['title']}{attr_str}")
+    lines.append("Edges:")
+    for edge in graph["edges"].values():
+        src = graph["nodes"].get(edge["source"], {}).get("title", "?")
+        tgt = graph["nodes"].get(edge["target"], {}).get("title", "?")
+        attrs = edge.get("attributes", {})
+        attr_str = (
+            (" {" + ", ".join(f"{k}: {v}" for k, v in attrs.items()) + "}")
+            if attrs
+            else ""
+        )
+        lines.append(f"  {src} -[{edge['relationship']}{attr_str}]-> {tgt}")
+    return "\n".join(lines)
 
 
 def write_nodes(
@@ -219,8 +292,6 @@ def write_nodes(
     by the unified pipeline in ingest.py; this function only handles storage.
     Nodes already mapped to an existing ID are merged instead of created.
     """
-    now = datetime.now(timezone.utc).isoformat()
-
     for temp_id, node_data in extraction.get("nodes", {}).items():
         real_id = temp_to_real[temp_id]
         raw_attrs: dict = dict(node_data.get("attributes", {}))
@@ -232,21 +303,23 @@ def write_nodes(
             _merge_node(graph, real_id, content, flat_attrs)
         else:
             graph["vector_index"][real_id] = vectors[temp_id]
+            title_key = node_data.get("title", "").lower().strip()
+            if title_key:
+                graph.setdefault("title_index", {})[title_key] = real_id
             graph["nodes"][real_id] = {
                 "id": real_id,
-                "type": node_data.get("node_type", "semantic"),
                 "label": node_data.get("label", ""),
                 "title": node_data.get("title", ""),
                 "content": content,
                 "attributes": flat_attrs,
-                "created_at": now,
+                "created_at": session_created_at,
                 "session_id": session_id,
                 "importance_score": 1.0,
                 "access_count": 0,
                 "last_accessed_at": None,
+                "turns_at_creation": _total_turns(graph),
+                "turns_at_last_access": None,
             }
-
-        _index_attributes(graph, real_id, raw_attrs)
 
 
 def write_edges(
@@ -257,25 +330,34 @@ def write_edges(
     session_created_at: str,
 ) -> None:
     """Write edges to the graph using the resolved temp_to_real node ID map."""
-    now = datetime.now(timezone.utc).isoformat()
+    edge_index: dict[tuple, str] = {
+        (e["source"], e["relationship"], e["target"]): eid
+        for eid, e in graph["edges"].items()
+    }
 
     for edge_data in extraction.get("edges", {}).values():
-        edge_id = str(uuid.uuid4())
-        source_real = temp_to_real.get(edge_data["source"], edge_data["source"])
-        target_real = temp_to_real.get(edge_data["target"], edge_data["target"])
+        source_real = temp_to_real.get(edge_data.get("source", ""))
+        target_real = temp_to_real.get(edge_data.get("target", ""))
+        if not source_real or not target_real:
+            continue
+        relationship = edge_data.get("relationship", "")
 
         raw_attrs: dict = dict(edge_data.get("attributes", {}))
         raw_attrs = _process_raw_dates(raw_attrs, session_created_at)
         flat_attrs = _flatten_attributes(raw_attrs)
 
-        graph["edges"][edge_id] = {
-            "id": edge_id,
-            "source": source_real,
-            "relationship": edge_data.get("relationship", ""),
-            "target": target_real,
-            "attributes": flat_attrs,
-            "created_at": now,
-            "session_id": session_id,
-        }
-
-        _index_attributes(graph, edge_id, raw_attrs)
+        key = (source_real, relationship, target_real)
+        if key in edge_index:
+            graph["edges"][edge_index[key]]["attributes"].update(flat_attrs)
+        else:
+            edge_id = str(uuid.uuid4())
+            graph["edges"][edge_id] = {
+                "id": edge_id,
+                "source": source_real,
+                "relationship": relationship,
+                "target": target_real,
+                "attributes": flat_attrs,
+                "created_at": session_created_at,
+                "session_id": session_id,
+            }
+            edge_index[key] = edge_id
