@@ -1,0 +1,162 @@
+{
+  "performance": {
+    "Graph RAG (per-q)": {
+      "f1": 0.4174,
+      "precision": 0.5049,
+      "recall": 0.4125,
+      "judge_correct": 0.454
+    },
+    "Baseline RAG (per-q)": {
+      "f1": 0.4677,
+      "precision": 0.5324,
+      "recall": 0.4856,
+      "judge_correct": 0.536
+    },
+    "Persistent (no-forget)": {
+      "f1": 0.2874,
+      "precision": 0.3634,
+      "recall": 0.2896,
+      "judge_correct": 0.3018
+    },
+    "Persistent (forget)": {
+      "f1": 0.2913,
+      "precision": 0.3613,
+      "recall": 0.2915,
+      "judge_correct": 0.2924
+    }
+  },
+  "question_counts": {
+    "Graph RAG (per-q)": {
+      "answered": 500,
+      "total": 501
+    },
+    "Baseline RAG (per-q)": {
+      "answered": 500,
+      "total": 501
+    },
+    "Persistent (no-forget)": {
+      "answered": 908,
+      "total": 1003
+    },
+    "Persistent (forget)": {
+      "answered": 913,
+      "total": 1003
+    }
+  },
+  "storage": {
+    "no_forget": {
+      "nodes": 27021,
+      "edges": 46538,
+      "file_size_kb": 451124.4,
+      "flagged_for_review": 0,
+      "node_types": {
+        "Person": 533,
+        "Artifact": 10932,
+        "Event": 1193,
+        "Concept": 11174,
+        "Organization": 1255,
+        "Location": 743,
+        "Preference": 481,
+        "Feature": 10,
+        "Goal": 279,
+        "Skill": 132,
+        "Animal": 10,
+        "Platform": 21,
+        "Statistic": 9,
+        "Website": 3,
+        "Bird": 6,
+        "Activity": 36,
+        "Document": 1,
+        "Color": 11,
+        "Program": 3,
+        "Metric": 5,
+        "Resource": 32,
+        "Research": 3,
+        "Technique": 40,
+        "Ingredient": 37,
+        "Budget": 2,
+        "Career": 5,
+        "Artist": 9,
+        "Community": 13,
+        "Task": 3,
+        "Research Paper": 2,
+        "Course": 2,
+        "Podcast": 1,
+        "Blog": 2,
+        "Form": 1,
+        "Game": 1,
+        "Species": 1,
+        "Currency": 1,
+        "Recipe": 2,
+        "Social Media": 1,
+        "Book": 1,
+        "Method": 2,
+        "Outcome": 2,
+        "Impact": 1,
+        "Dataset": 2,
+        "Industry": 8,
+        "Requirement": 3,
+        "Nutrient": 4,
+        "Supplement": 2,
+        "Award": 1
+      }
+    },
+    "forget": {
+      "nodes": 24368,
+      "edges": 43978,
+      "file_size_kb": 408141.6,
+      "flagged_for_review": 0,
+      "node_types": {
+        "Person": 487,
+        "Artifact": 9876,
+        "Event": 1049,
+        "Concept": 10090,
+        "Organization": 1110,
+        "Location": 697,
+        "Preference": 409,
+        "Goal": 261,
+        "Skill": 129,
+        "Animal": 8,
+        "Platform": 18,
+        "Statistic": 6,
+        "Website": 2,
+        "Bird": 6,
+        "Activity": 23,
+        "Document": 1,
+        "Color": 7,
+        "Program": 1,
+        "Metric": 5,
+        "Resource": 32,
+        "Research": 3,
+        "Technique": 40,
+        "Ingredient": 37,
+        "Budget": 2,
+        "Feature": 8,
+        "Career": 5,
+        "Artist": 9,
+        "Community": 10,
+        "Task": 3,
+        "Research Paper": 2,
+        "Course": 2,
+        "Podcast": 1,
+        "Blog": 2,
+        "Form": 1,
+        "Game": 1,
+        "Species": 1,
+        "Currency": 1,
+        "Recipe": 2,
+        "Social Media": 1,
+        "Book": 1,
+        "Method": 2,
+        "Outcome": 2,
+        "Impact": 1,
+        "Dataset": 2,
+        "Industry": 2,
+        "Requirement": 3,
+        "Nutrient": 4,
+        "Supplement": 2,
+        "Award": 1
+      }
+    }
+  }
+}

@@ -1,118 +1,172 @@
-# Selective Amnesia: Knowledge Graph Augmented Retrieval
+# Selective Forgetting: A Graph-Based Memory Framework for Long-Term LLM Agents
 
-This repository contains two related graph-RAG systems for conversational memory, each evaluated on a different benchmark.
+A knowledge graph system with a forgetting module for augmenting LLM responses with persistent user memory, evaluated against the LongMemEval benchmark.
 
-## LoCoMo pipeline (LangGraph)
+## Prerequisites
 
-The main chat pipeline extends RAG with a **knowledge-graph-based memory system** that maintains a persistent, structured representation of everything discussed across a conversation. When a user sends a message, the system retrieves a semantically relevant subgraph and injects it as structured context before generating a response. After the response is generated, the user's message is processed by a second LLM call that extracts new nodes and edges and merges them into the graph.
+* Python 3.10+
 
-A **forgetting module** runs periodically to prune low-importance nodes, preventing the graph from growing unboundedly and keeping retrieval focused on what is most relevant.
+* [Ollama](https://ollama.com) running locally with the required models pulled:
 
-Built with **LangGraph** for the main flow, **Gemma2 via Ollama** as the LLM, and **nomic-embed-text via Ollama** for embeddings. Evaluated on the **LoCoMo** benchmark.
+  ```bash
+  ollama pull nomic-embed-text
+  ```
 
-### Prerequisites (LoCoMo)
+* Install dependencies:
 
-- Python 3.11+
-- [Ollama](https://ollama.com) running locally
-- The LoCoMo dataset file `data/locomo10.json` (not included — place it manually) [https://github.com/snap-research/locomo/blob/main/data/locomo10.json](https://github.com/snap-research/locomo/blob/main/data/locomo10.json)
+  ```bash
+  pip install -r requirements.txt
+  ```
 
-### Setup
+* Create a `.env` file in the project root and add your OpenAI API key:
 
-```bash
-ollama pull gemma2
-ollama pull nomic-embed-text
-pip install -r requirements.txt
-mkdir -p data/benchmarks
-```
+  ```env
+  OPENAI_API_KEY=your_openai_api_key_here
+  ```
 
-### Running the live chat (`main.py`)
+* Download the `longmemeval_oracle.json` dataset from [Hugging Face](https://huggingface.co/datasets/xiaowu0162/longmemeval-cleaned):
 
-**Interactive mode:**
+  1. Open the [LongMemEval cleaned dataset](https://huggingface.co/datasets/xiaowu0162/longmemeval-cleaned/tree/main).
+  2. Download `longmemeval_oracle.json`.
+  3. Create a `data` folder in the root of the project.
+  4. Place `longmemeval_oracle.json` inside the `data` folder.
 
-```bash
-python main.py
-```
+  Your project structure should look like:
 
-Type messages at the `You:` prompt. Type `quit` or press `Ctrl-C` to exit. The knowledge graph is saved to `data/graph.json` and a turn-by-turn log is written to `data/chat_log.json`.
+  ```text
+  project-root/
+  ├── data/
+  │   └── longmemeval_oracle.json
+  ├── .env
+  ├── requirements.txt
+  └── ...
+  ```
 
-**Script mode (batch prompts from a file):**
+## Running
 
-```bash
-python main.py --script test_prompts.txt
-```
+### Combined Benchmark
 
-**Reset the graph before starting:**
+`combined_benchmark.py` runs all four RAG experiment variants in a single benchmark: per-question Graph RAG, per-question baseline RAG, persistent Graph RAG without forgetting, and persistent Graph RAG with forgetting. It shares extraction results across the graph variants, uses checkpointing for safe resume, and produces a combined performance and storage comparison.
 
-```bash
-python main.py --reset
-```
-
-### LoCoMo benchmark
-
-Ingest builds a per-sample knowledge graph from the LoCoMo conversation histories:
-
-```bash
-python benchmark/ingest.py --data data/locomo10.json --samples 1
-python benchmark/ingest.py --data data/locomo10.json
-```
-
-Evaluate queries each sample's graph with the LoCoMo QA pairs:
+**Run:**
 
 ```bash
-python benchmark/evaluate.py --data data/locomo10.json --samples 1
-python benchmark/evaluate.py --data data/locomo10.json --samples 10
+python combined_benchmark.py [--limit N] [--data PATH] [--out-dir DIR] \
+    [--per-type N] [--seed N] [--forget-every-n N] \
+    [--forget-threshold F] [--forget-node-count N] \
+    [--forget-recency-half-life-days F] [--forget-turns-half-life F] \
+    [--skip-phase2]
 ```
 
-Results are saved to `data/benchmarks/results.json` by default.
+**Arguments:**
 
-### Visualizing a knowledge graph
+* `--data PATH` — Path to the dataset JSON (default: `data/longmemeval_oracle.json`).
+* `--out-dir DIR` — Directory for all output files (default: `combined/`).
+* `--limit N` — Maximum total number of questions.
+* `--per-type N` — Sample `N` questions per `question_type`.
+* `--seed N` — Random seed for subsampling (default: `42`).
+* `--forget-every-n N` — Trigger forgetting every `N` turns.
+* `--forget-threshold F` — Importance-score threshold used for pruning.
+* `--forget-node-count N` — Trigger forgetting when the graph reaches `N` nodes.
+* `--forget-recency-half-life-days F` — Recency half-life, in days, used by the forgetting module.
+* `--forget-turns-half-life F` — Turn-based half-life used by the forgetting module.
+* `--skip-phase2` — Run only Phase 1 (ingestion and per-question Graph/Baseline RAG evaluation). Phase 2 can be run by rerunning the command without this flag.
 
-```bash
-python data/visualize_graph.py data/graph.json
-python data/visualize_graph.py data/benchmarks/kg_<sample_id>.json
-```
+The benchmark saves checkpoints, per-variant results, persistent graph states, and a final `summary.json` under the specified output directory. Rerunning the same command resumes from the checkpoint and skips completed work.
+
 
 ---
 
-## LongMemEval pipeline
+### Knowledge Graph Benchmark
 
-A separate graph-RAG pipeline with session-based graph storage, evaluated against the **LongMemEval** benchmark. Uses `graph/session_graph.py` for its graph schema (distinct from the LoCoMo pipeline's `graph/graph_manager.py`).
+`benchmark.py` runs the LongMemEval benchmark using a knowledge graph: it ingests all user and assistant turns into a fresh in-memory graph for each question, retrieves a relevant subgraph as context, and evaluates the generated answer against the ground truth. It optionally applies the forgetting module during ingestion and records both retrieval/answer metrics and graph-forgetting statistics.
 
-### Running LongMemEval benchmarks
-
-**Graph RAG benchmark** — ingests user turns into a fresh knowledge graph per question, then answers using subgraph retrieval:
+**Run:**
 
 ```bash
-python -m benchmark [--limit N] [--per-type N] [--seed N] [--data PATH] [--verbose]
+python -m benchmark [--limit N] [--per-type N] [--seed SEED] [--data PATH] \
+    [--verbose] [--forget] [--forget-every-n N] [--forget-threshold T] \
+    [--forget-node-count N] [--type QUESTION_TYPE] [--resume] [--output PATH]
 ```
 
-| Flag | Default | Description |
-|---|---|---|
-| `--limit N` | all | Max total questions (applied after subsampling) |
-| `--per-type N` | all | Sample this many questions per question type |
-| `--seed N` | 42 | Random seed for subsampling |
-| `--data PATH` | `data/longmemeval_oracle.json` | Path to the dataset JSON |
-| `--verbose` | off | Print each question result as it runs |
+**Arguments:**
 
-**Flat vector baseline** — same benchmark using a flat FAISS-style vector store over raw text chunks (no graph):
+* `--limit N` — Maximum number of questions to evaluate, applied after other filtering/subsampling.
+* `--per-type N` — Sample `N` questions per `question_type`.
+* `--seed SEED` — Random seed for subsampling (default: `42`).
+* `--data PATH` — Path to the dataset JSON (default: `data/longmemeval_oracle.json`).
+* `--verbose` — Print detailed results for each question.
+* `--forget` — Enable the forgetting module during ingestion.
+* `--forget-every-n N` — Trigger forgetting every `N` ingested turns (default: `50`).
+* `--forget-threshold T` — Importance-score threshold below which graph nodes are pruned (default: `0.15`).
+* `--forget-node-count N` — Trigger forgetting when the graph reaches `N` nodes (default: `300`).
+* `--type QUESTION_TYPE` — Run only questions of a specific type, such as `knowledge-update`, `multi-session`, or `temporal-reasoning`.
+* `--resume` — Resume from an existing results file, retaining successful results and continuing from the first errored entry.
+* `--output PATH` — Output file path (default: `results.json`).
+
+Results are saved to the specified output file, and the full knowledge graph for each question is saved under `graphs/<question_id>.json`. The benchmark reports token-level F1, precision, recall, and LLM-judged correctness, with results also broken down by question type.
+
+
+---
+
+### Baseline RAG Benchmark
+
+`baseline_rag.py` runs a baseline Retrieval-Augmented Generation (RAG) benchmark using a flat vector store, where each conversation turn is embedded and the top-k most similar chunks are retrieved as context for answering each question. This provides a graph-free baseline for comparison with the knowledge-graph-based benchmark.
+
+**Run:**
 
 ```bash
-python -m baseline_rag [--limit N] [--per-type N] [--seed N] [--data PATH] [--top-k K] [--verbose]
+python -m baseline_rag [--limit N] [--per-type N] [--seed SEED] [--data PATH] [--top-k K] [--verbose]
 ```
 
-| Flag | Default | Description |
-|---|---|---|
-| `--limit N` | all | Max total questions |
-| `--per-type N` | all | Sample this many questions per question type |
-| `--seed N` | 42 | Random seed for subsampling |
-| `--data PATH` | `data/longmemeval_oracle.json` | Path to the dataset JSON |
-| `--top-k K` | 5 | Chunks to retrieve per question |
-| `--verbose` | off | Print each question result as it runs |
+**Arguments:**
 
-### Testing extraction in isolation
+* `--limit N` — Maximum number of questions to evaluate.
+* `--per-type N` — Sample `N` questions per `question_type`.
+* `--seed SEED` — Random seed for subsampling (default: `42`).
+* `--data PATH` — Path to the dataset JSON file (defaults to the project's configured `DATA_PATH`).
+* `--top-k K` — Number of chunks to retrieve for each question (default: `5`).
+* `--verbose` — Print detailed results for each question.
+
+Results are saved to `baseline_results.json`.
+
+
+---
+
+### Lifetime Graph Experiment
+
+`experiment_lifetime.py` evaluates the forgetting module in a long-lived memory setting by ingesting all sessions from a subset of questions into one shared knowledge graph in chronological order. It runs the same questions against both an unbounded graph and a periodically pruned graph, then compares F1 and LLM-judged correctness to measure the effect of forgetting on retrieval quality.
+
+**Run:**
 
 ```bash
-python graph/ingest.py
+python experiment_lifetime.py [--data PATH] [--per-type N] [--limit N] \
+    [--seed SEED] [--regen-cache] [--forget-every-n N] \
+    [--forget-threshold T] [--forget-node-count N]
 ```
 
-Accepts a single user message, runs extraction and ingestion, and prints the resulting subgraph context.
+**Arguments:**
+
+* `--data PATH` — Path to the dataset JSON (default: `data/longmemeval_oracle.json`).
+* `--per-type N` — Sample `N` questions per `question_type`.
+* `--limit N` — Maximum total number of questions.
+* `--seed SEED` — Random seed for subsampling (default: `42`).
+* `--regen-cache` — Re-extract all user turns instead of using the existing `lifetime_cache.json`.
+* `--forget-every-n N` — Trigger forgetting every `N` turns.
+* `--forget-threshold T` — Importance-score threshold used for pruning.
+* `--forget-node-count N` — Trigger forgetting when the graph reaches this many nodes.
+
+The experiment writes the extraction cache to `lifetime_cache.json`, saves the two graphs as `graphs/lifetime_no_forget.json` and `graphs/lifetime_forget.json`, and writes the final comparison to `lifetime_results.json`.
+
+
+---
+
+### Interactive extraction
+
+Accepts a single user message, runs extraction, and prints the resulting graph triples as JSON.
+
+```
+python main.py
+```
+
+You will be prompted to enter a message. Useful for testing the extraction pipeline in isolation.

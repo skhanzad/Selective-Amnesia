@@ -15,24 +15,20 @@ Usage:
 import argparse
 import json
 import time
-from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
 
-from benchmark import (
+from experiments.benchmark import (
     DATA_PATH,
-    METRICS,
-    _build_summary,
     _save_output,
     _subsample,
-    exact_match,
     generate_answer,
     llm_judge,
     report,
     token_scores,
 )
-from graph.embedder import get_embedding, get_embeddings
+from graph.embedder import get_embedding
 
 TOP_K = 5
 
@@ -73,17 +69,22 @@ def run_question(item: dict, top_k: int = TOP_K, verbose: bool = False) -> dict:
     q_start = time.time()
 
     sessions = item["haystack_sessions"]
-    total_user_turns = sum(1 for s in sessions for t in s if t["role"] == "user")
+    total_turns = sum(
+        1 for s in sessions for t in s if t["role"] in ("user", "assistant")
+    )
     turn_num = 0
 
     for session in sessions:
         for turn in session:
-            if turn["role"] != "user":
+            if turn["role"] not in ("user", "assistant"):
                 continue
             turn_num += 1
             preview = turn["content"][:60].replace("\n", " ")
             t0 = time.time()
-            print(f"  ingesting turn {turn_num}/{total_user_turns}: {preview!r}", flush=True)
+            print(
+                f"  ingesting turn {turn_num}/{total_turns} [{turn['role']}]: {preview!r}",
+                flush=True,
+            )
             ingest_chunk(turn["content"], store)
             print(f"    done in {time.time() - t0:.1f}s", flush=True)
 
@@ -92,7 +93,10 @@ def run_question(item: dict, top_k: int = TOP_K, verbose: bool = False) -> dict:
     context = retrieve_chunks(item["question"], store, top_k=top_k)
     print(f"  context: {top_k} chunks retrieved ({time.time() - t0:.1f}s)", flush=True)
     if context:
-        print(f"\n  --- Retrieved chunks ---\n{context[:500]}{'...' if len(context) > 500 else ''}\n  ---", flush=True)
+        print(
+            f"\n  --- Retrieved chunks ---\n{context[:500]}{'...' if len(context) > 500 else ''}\n  ---",
+            flush=True,
+        )
 
     t0 = time.time()
     print("  generating answer...", flush=True)
@@ -110,19 +114,21 @@ def run_question(item: dict, top_k: int = TOP_K, verbose: bool = False) -> dict:
         "ground_truth": ground_truth,
         "predicted": predicted,
         "time_seconds": round(time.time() - q_start, 1),
-        "turns_ingested": total_user_turns,
+        "turns_ingested": total_turns,
         "chunks_retrieved": top_k,
         **scores,
     }
 
     if verbose:
-        print(f"\n{'─'*60}")
+        print(f"\n{'─' * 60}")
         print(f"ID:         {result['question_id']}")
         print(f"Type:       {result['question_type']}")
         print(f"Question:   {result['question']}")
         print(f"Expected:   {ground_truth}")
         print(f"Predicted:  {predicted}")
-        print(f"F1: {scores['f1']:.3f}  P: {scores['precision']:.3f}  R: {scores['recall']:.3f}  EM: {scores.get('exact_match', 0)}")
+        print(
+            f"F1: {scores['f1']:.3f}  P: {scores['precision']:.3f}  R: {scores['recall']:.3f}  EM: {scores.get('exact_match', 0)}"
+        )
 
     return result
 
@@ -133,13 +139,30 @@ def run_question(item: dict, top_k: int = TOP_K, verbose: bool = False) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run baseline RAG benchmark")
     parser.add_argument("--limit", type=int, default=None, help="Max total questions")
-    parser.add_argument("--per-type", type=int, default=None, help="Sample this many questions per question_type")
-    parser.add_argument("--seed", type=int, default=42, help="Random seed for subsampling (default: 42)")
-    parser.add_argument("--data", type=str, default=str(DATA_PATH), help="Path to dataset JSON")
-    parser.add_argument("--output", type=str, default=None, help="Save per-question results to JSON")
-    parser.add_argument("--top-k", type=int, default=TOP_K, help=f"Chunks to retrieve per question (default: {TOP_K})")
-    parser.add_argument("--verbose", action="store_true", help="Print each question result")
+    parser.add_argument(
+        "--per-type",
+        type=int,
+        default=None,
+        help="Sample this many questions per question_type",
+    )
+    parser.add_argument(
+        "--seed", type=int, default=42, help="Random seed for subsampling (default: 42)"
+    )
+    parser.add_argument(
+        "--data", type=str, default=str(DATA_PATH), help="Path to dataset JSON"
+    )
+    parser.add_argument(
+        "--top-k",
+        type=int,
+        default=TOP_K,
+        help=f"Chunks to retrieve per question (default: {TOP_K})",
+    )
+    parser.add_argument(
+        "--verbose", action="store_true", help="Print each question result"
+    )
     args = parser.parse_args()
+
+    output_path = "baseline_results.json"
 
     data = json.loads(Path(args.data).read_text(encoding="utf-8"))
 
@@ -154,7 +177,10 @@ def main() -> None:
 
     results = []
     for i, item in enumerate(data):
-        print(f"\n[{i+1}/{len(data)}] {item['question_id']}  type={item.get('question_type', '?')}", flush=True)
+        print(
+            f"\n[{i + 1}/{len(data)}] {item['question_id']}  type={item.get('question_type', '?')}",
+            flush=True,
+        )
         print(f"  Q: {item['question']}", flush=True)
         q_start = time.time()
         try:
@@ -174,26 +200,26 @@ def main() -> None:
             elapsed_s = round(time.time() - q_start, 1)
             print(f"  ERROR after {elapsed_s}s: {exc}", flush=True)
             traceback.print_exc()
-            results.append({
-                "question_id": item["question_id"],
-                "question_type": item.get("question_type", "unknown"),
-                "question": item["question"],
-                "ground_truth": item.get("answer", ""),
-                "predicted": None,
-                "time_seconds": elapsed_s,
-                "error": str(exc),
-                "f1": 0.0,
-                "precision": 0.0,
-                "recall": 0.0,
-                "exact_match": 0,
-            })
+            results.append(
+                {
+                    "question_id": item["question_id"],
+                    "question_type": item.get("question_type", "unknown"),
+                    "question": item["question"],
+                    "ground_truth": item.get("answer", ""),
+                    "predicted": None,
+                    "time_seconds": elapsed_s,
+                    "error": str(exc),
+                    "f1": 0.0,
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "exact_match": 0,
+                }
+            )
 
-        if args.output:
-            _save_output(results, args.output)
+        _save_output(results, output_path)
 
     report(results)
-    if args.output:
-        print(f"\nResults saved to {args.output}")
+    print(f"\nResults saved to {output_path}")
 
 
 if __name__ == "__main__":
