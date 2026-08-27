@@ -1,7 +1,6 @@
 import json
-import re
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 
 from graph.embedder import cosine_similarity
@@ -292,6 +291,8 @@ def write_nodes(
     by the unified pipeline in ingest.py; this function only handles storage.
     Nodes already mapped to an existing ID are merged instead of created.
     """
+    now = datetime.now(timezone.utc).isoformat()
+
     for temp_id, node_data in extraction.get("nodes", {}).items():
         real_id = temp_to_real[temp_id]
         raw_attrs: dict = dict(node_data.get("attributes", {}))
@@ -303,61 +304,49 @@ def write_nodes(
             _merge_node(graph, real_id, content, flat_attrs)
         else:
             graph["vector_index"][real_id] = vectors[temp_id]
-            title_key = node_data.get("title", "").lower().strip()
-            if title_key:
-                graph.setdefault("title_index", {})[title_key] = real_id
             graph["nodes"][real_id] = {
                 "id": real_id,
+                "type": node_data.get("node_type", "semantic"),
                 "label": node_data.get("label", ""),
                 "title": node_data.get("title", ""),
                 "content": content,
                 "attributes": flat_attrs,
-                "created_at": session_created_at,
+                "created_at": now,
                 "session_id": session_id,
                 "importance_score": 1.0,
                 "access_count": 0,
                 "last_accessed_at": None,
-                "turns_at_creation": _total_turns(graph),
-                "turns_at_last_access": None,
             }
 
+        _index_attributes(graph, real_id, raw_attrs)
 
-def write_edges(
+
+def add_edge(
     graph: dict,
-    extraction: dict,
-    temp_to_real: dict[str, str],
-    session_id: str,
-    session_created_at: str,
+    source_id: str,
+    target_id: str,
+    relation: str,
 ) -> None:
     """Write edges to the graph using the resolved temp_to_real node ID map."""
-    edge_index: dict[tuple, str] = {
-        (e["source"], e["relationship"], e["target"]): eid
-        for eid, e in graph["edges"].items()
-    }
+    now = datetime.now(timezone.utc).isoformat()
 
     for edge_data in extraction.get("edges", {}).values():
-        source_real = temp_to_real.get(edge_data.get("source", ""))
-        target_real = temp_to_real.get(edge_data.get("target", ""))
-        if not source_real or not target_real:
-            continue
-        relationship = edge_data.get("relationship", "")
+        edge_id = str(uuid.uuid4())
+        source_real = temp_to_real.get(edge_data["source"], edge_data["source"])
+        target_real = temp_to_real.get(edge_data["target"], edge_data["target"])
 
         raw_attrs: dict = dict(edge_data.get("attributes", {}))
         raw_attrs = _process_raw_dates(raw_attrs, session_created_at)
         flat_attrs = _flatten_attributes(raw_attrs)
 
-        key = (source_real, relationship, target_real)
-        if key in edge_index:
-            graph["edges"][edge_index[key]]["attributes"].update(flat_attrs)
-        else:
-            edge_id = str(uuid.uuid4())
-            graph["edges"][edge_id] = {
-                "id": edge_id,
-                "source": source_real,
-                "relationship": relationship,
-                "target": target_real,
-                "attributes": flat_attrs,
-                "created_at": session_created_at,
-                "session_id": session_id,
-            }
-            edge_index[key] = edge_id
+        graph["edges"][edge_id] = {
+            "id": edge_id,
+            "source": source_real,
+            "relationship": edge_data.get("relationship", ""),
+            "target": target_real,
+            "attributes": flat_attrs,
+            "created_at": now,
+            "session_id": session_id,
+        }
+
+        _index_attributes(graph, edge_id, raw_attrs)

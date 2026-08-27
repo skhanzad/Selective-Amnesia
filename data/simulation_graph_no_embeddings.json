@@ -1,0 +1,642 @@
+{
+  "nodes": {
+    "685185be-fd0d-4c13-94a9-ce7332bf1965": {
+      "id": "685185be-fd0d-4c13-94a9-ce7332bf1965",
+      "label": "User",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 10,
+        "created_at": "2026-04-04T21:48:25.923202+00:00",
+        "last_accessed_at": "2026-04-04T21:50:11.343163+00:00"
+      }
+    },
+    "edf17595-c94b-4ad6-9f86-5666fddd6a0f": {
+      "id": "edf17595-c94b-4ad6-9f86-5666fddd6a0f",
+      "label": "Daniel",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 6,
+        "created_at": "2026-04-04T21:48:27.991524+00:00",
+        "last_accessed_at": "2026-04-04T21:49:57.453572+00:00"
+      }
+    },
+    "d1061b9b-e47f-4812-a84d-df2843fe1b9d": {
+      "id": "d1061b9b-e47f-4812-a84d-df2843fe1b9d",
+      "label": "Shopify",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 2,
+        "created_at": "2026-04-04T21:48:30.059737+00:00",
+        "last_accessed_at": "2026-04-04T21:49:10.720403+00:00"
+      }
+    },
+    "3c4cc7d2-38dc-4723-8d48-89b4950011d4": {
+      "id": "3c4cc7d2-38dc-4723-8d48-89b4950011d4",
+      "label": "Toronto",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:48:32.144803+00:00",
+        "last_accessed_at": "2026-04-04T21:48:32.144803+00:00"
+      }
+    },
+    "5ef58671-6a33-43cf-9668-86395bce9e1a": {
+      "id": "5ef58671-6a33-43cf-9668-86395bce9e1a",
+      "label": "Software Engineer",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:48:34.209908+00:00",
+        "last_accessed_at": "2026-04-04T21:48:34.209908+00:00"
+      }
+    },
+    "b69a69e3-df81-46af-afc1-ebd0fbfe7913": {
+      "id": "b69a69e3-df81-46af-afc1-ebd0fbfe7913",
+      "label": "University of Waterloo",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:48:41.567862+00:00",
+        "last_accessed_at": "2026-04-04T21:48:41.567862+00:00"
+      }
+    },
+    "928e7364-7ebc-4a3d-bd0e-0bfca75129c6": {
+      "id": "928e7364-7ebc-4a3d-bd0e-0bfca75129c6",
+      "label": "Computer Engineering",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:48:43.638477+00:00",
+        "last_accessed_at": "2026-04-04T21:48:43.638477+00:00"
+      }
+    },
+    "6de3118b-be2e-4bc3-b974-e09964fbce23": {
+      "id": "6de3118b-be2e-4bc3-b974-e09964fbce23",
+      "label": "Raptors game",
+      "type": "episodic",
+      "attributes": {
+        "when": "last weekend"
+      },
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:48:51.277887+00:00",
+        "last_accessed_at": "2026-04-04T21:48:51.277887+00:00"
+      }
+    },
+    "8e182d2f-478f-4dc8-a866-2d119a8a913a": {
+      "id": "8e182d2f-478f-4dc8-a866-2d119a8a913a",
+      "label": "Scotiabank Arena",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:48:53.329274+00:00",
+        "last_accessed_at": "2026-04-04T21:48:53.329274+00:00"
+      }
+    },
+    "9a6f8d6e-5424-4384-9c02-4f1081df0bab": {
+      "id": "9a6f8d6e-5424-4384-9c02-4f1081df0bab",
+      "label": "Reinforcement Learning",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:49:00.717743+00:00",
+        "last_accessed_at": "2026-04-04T21:49:00.717743+00:00"
+      }
+    },
+    "99061fa8-503b-4776-b67d-961ff0c18ee4": {
+      "id": "99061fa8-503b-4776-b67d-961ff0c18ee4",
+      "label": "Neural Networks",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:49:02.769737+00:00",
+        "last_accessed_at": "2026-04-04T21:49:02.769737+00:00"
+      }
+    },
+    "e961facb-d7b2-4245-bbeb-2ee900175b70": {
+      "id": "e961facb-d7b2-4245-bbeb-2ee900175b70",
+      "label": "AI Course",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:49:04.808932+00:00",
+        "last_accessed_at": "2026-04-04T21:49:04.808932+00:00"
+      }
+    },
+    "0f9e19ef-f684-4969-8967-d5ba63b50476": {
+      "id": "0f9e19ef-f684-4969-8967-d5ba63b50476",
+      "label": "Machine Learning Models",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:49:12.828014+00:00",
+        "last_accessed_at": "2026-04-04T21:49:12.828014+00:00"
+      }
+    },
+    "c6c827f4-26b7-4af6-85f2-1caeb85941a6": {
+      "id": "c6c827f4-26b7-4af6-85f2-1caeb85941a6",
+      "label": "Product Recommendations",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:49:14.915442+00:00",
+        "last_accessed_at": "2026-04-04T21:49:14.915442+00:00"
+      }
+    },
+    "33f4b56c-cd65-4739-8b34-0e12bf455df4": {
+      "id": "33f4b56c-cd65-4739-8b34-0e12bf455df4",
+      "label": "Python",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:49:22.504023+00:00",
+        "last_accessed_at": "2026-04-04T21:49:22.504023+00:00"
+      }
+    },
+    "07b3d872-39bf-4b68-bcaf-a97667d4b7e3": {
+      "id": "07b3d872-39bf-4b68-bcaf-a97667d4b7e3",
+      "label": "Graph-based memory systems",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:49:24.567313+00:00",
+        "last_accessed_at": "2026-04-04T21:49:24.567313+00:00"
+      }
+    },
+    "8f54ab07-3752-446a-bc06-8a07884c654e": {
+      "id": "8f54ab07-3752-446a-bc06-8a07884c654e",
+      "label": "Debugging",
+      "type": "episodic",
+      "attributes": {
+        "when": "Yesterday",
+        "duration": "three hours"
+      },
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:49:26.670683+00:00",
+        "last_accessed_at": "2026-04-04T21:49:26.670683+00:00"
+      }
+    },
+    "ead355ee-d54c-4c86-b63a-1faea78e333a": {
+      "id": "ead355ee-d54c-4c86-b63a-1faea78e333a",
+      "label": "Professor",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:49:34.643509+00:00",
+        "last_accessed_at": "2026-04-04T21:49:34.643509+00:00"
+      }
+    },
+    "46099a03-adce-496a-a500-7346febfb210": {
+      "id": "46099a03-adce-496a-a500-7346febfb210",
+      "label": "University of Toronto",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:49:36.700645+00:00",
+        "last_accessed_at": "2026-04-04T21:49:36.700645+00:00"
+      }
+    },
+    "e2b74834-1588-4621-b6dd-c4ddf5cc0142": {
+      "id": "e2b74834-1588-4621-b6dd-c4ddf5cc0142",
+      "label": "Knowledge Graphs",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:49:38.784349+00:00",
+        "last_accessed_at": "2026-04-04T21:49:38.784349+00:00"
+      }
+    },
+    "69835d3f-dfbf-4834-bedb-7d8cc45e3f1b": {
+      "id": "69835d3f-dfbf-4834-bedb-7d8cc45e3f1b",
+      "label": "LLMs",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:49:40.870881+00:00",
+        "last_accessed_at": "2026-04-04T21:49:40.870881+00:00"
+      }
+    },
+    "322c5d84-01f2-4e28-b63c-01ab4cc776c6": {
+      "id": "322c5d84-01f2-4e28-b63c-01ab4cc776c6",
+      "label": "Graph Database Project",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:49:48.188289+00:00",
+        "last_accessed_at": "2026-04-04T21:49:48.188289+00:00"
+      }
+    },
+    "d158be04-98fa-4d60-8a22-962a4c3cb31c": {
+      "id": "d158be04-98fa-4d60-8a22-962a4c3cb31c",
+      "label": "Internship",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:49:50.278176+00:00",
+        "last_accessed_at": "2026-04-04T21:49:50.278176+00:00"
+      }
+    },
+    "be6f1065-4b3d-48f4-b088-cf552bfa8d5a": {
+      "id": "be6f1065-4b3d-48f4-b088-cf552bfa8d5a",
+      "label": "AI Startups",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:49:59.534435+00:00",
+        "last_accessed_at": "2026-04-04T21:49:59.534435+00:00"
+      }
+    },
+    "cfc98e0d-2091-4023-a6be-16782126c25c": {
+      "id": "cfc98e0d-2091-4023-a6be-16782126c25c",
+      "label": "Cafe",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:50:01.602337+00:00",
+        "last_accessed_at": "2026-04-04T21:50:01.602337+00:00"
+      }
+    },
+    "7c8d60bb-4197-45ef-9c69-c47e284990d4": {
+      "id": "7c8d60bb-4197-45ef-9c69-c47e284990d4",
+      "label": "Queen Street",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:50:03.689312+00:00",
+        "last_accessed_at": "2026-04-04T21:50:03.689312+00:00"
+      }
+    },
+    "40fa5e64-68d6-495a-974b-9782c7cfa4d8": {
+      "id": "40fa5e64-68d6-495a-974b-9782c7cfa4d8",
+      "label": "Had coffee with Daniel",
+      "type": "episodic",
+      "attributes": {
+        "when": "Two days ago"
+      },
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:50:05.759138+00:00",
+        "last_accessed_at": "2026-04-04T21:50:05.759138+00:00"
+      }
+    },
+    "1ce699ef-d2f1-42c9-856f-874bcf8e2062": {
+      "id": "1ce699ef-d2f1-42c9-856f-874bcf8e2062",
+      "label": "Embeddings",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:50:13.412374+00:00",
+        "last_accessed_at": "2026-04-04T21:50:13.412374+00:00"
+      }
+    },
+    "6046f5bf-e2e2-44c3-a697-f9470908686b": {
+      "id": "6046f5bf-e2e2-44c3-a697-f9470908686b",
+      "label": "Vector Databases",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:50:15.479838+00:00",
+        "last_accessed_at": "2026-04-04T21:50:15.479838+00:00"
+      }
+    },
+    "02c397fa-4974-4083-a187-4ffd6d5165e5": {
+      "id": "02c397fa-4974-4083-a187-4ffd6d5165e5",
+      "label": "Pinecone",
+      "type": "semantic",
+      "attributes": {},
+      "importance_score": 1.0,
+      "stats": {
+        "access_count": 1,
+        "created_at": "2026-04-04T21:50:17.550454+00:00",
+        "last_accessed_at": "2026-04-04T21:50:17.550454+00:00"
+      }
+    }
+  },
+  "edges": [
+    {
+      "id": "ff6a5a9f-9122-467e-ae8a-7a958694219e",
+      "source": "685185be-fd0d-4c13-94a9-ce7332bf1965",
+      "target": "edf17595-c94b-4ad6-9f86-5666fddd6a0f",
+      "relation": "KNOWS",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:48:34.209924+00:00"
+    },
+    {
+      "id": "0bc53bc2-9fe4-442c-ac1c-ae7c583a798c",
+      "source": "edf17595-c94b-4ad6-9f86-5666fddd6a0f",
+      "target": "d1061b9b-e47f-4812-a84d-df2843fe1b9d",
+      "relation": "WORKS_AT",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:48:34.209935+00:00"
+    },
+    {
+      "id": "a2dc5138-59f6-40f6-91e7-99772fd71caa",
+      "source": "edf17595-c94b-4ad6-9f86-5666fddd6a0f",
+      "target": "5ef58671-6a33-43cf-9668-86395bce9e1a",
+      "relation": "HAS_ROLE",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:48:34.209966+00:00"
+    },
+    {
+      "id": "4199dfaa-a70d-4202-a638-140a20baec0b",
+      "source": "d1061b9b-e47f-4812-a84d-df2843fe1b9d",
+      "target": "3c4cc7d2-38dc-4723-8d48-89b4950011d4",
+      "relation": "LOCATED_IN",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:48:34.209973+00:00"
+    },
+    {
+      "id": "4ae8cf7c-d8ee-4d86-8923-0b33079b3cf2",
+      "source": "edf17595-c94b-4ad6-9f86-5666fddd6a0f",
+      "target": "b69a69e3-df81-46af-afc1-ebd0fbfe7913",
+      "relation": "GRADUATED_FROM",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:48:43.638494+00:00"
+    },
+    {
+      "id": "e54b8aac-75fd-42ca-944a-526a0209fbd6",
+      "source": "edf17595-c94b-4ad6-9f86-5666fddd6a0f",
+      "target": "928e7364-7ebc-4a3d-bd0e-0bfca75129c6",
+      "relation": "HAS_DEGREE_IN",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:48:43.638503+00:00"
+    },
+    {
+      "id": "df12bdc4-1b58-4461-84b1-c564ab730214",
+      "source": "685185be-fd0d-4c13-94a9-ce7332bf1965",
+      "target": "6de3118b-be2e-4bc3-b974-e09964fbce23",
+      "relation": "ATTENDED",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:48:53.329290+00:00"
+    },
+    {
+      "id": "deefb04c-ac3e-4d01-b47b-fb607b3f5780",
+      "source": "6de3118b-be2e-4bc3-b974-e09964fbce23",
+      "target": "edf17595-c94b-4ad6-9f86-5666fddd6a0f",
+      "relation": "ATTENDED_WITH",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:48:53.329299+00:00"
+    },
+    {
+      "id": "bc8c7181-1816-4ce5-84de-5101aca2635c",
+      "source": "6de3118b-be2e-4bc3-b974-e09964fbce23",
+      "target": "8e182d2f-478f-4dc8-a866-2d119a8a913a",
+      "relation": "TOOK_PLACE_AT",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:48:53.329305+00:00"
+    },
+    {
+      "id": "ad0dc34e-7815-43eb-a6e0-7b774f6996bf",
+      "source": "685185be-fd0d-4c13-94a9-ce7332bf1965",
+      "target": "9a6f8d6e-5424-4384-9c02-4f1081df0bab",
+      "relation": "LEARNING_ABOUT",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:49:04.808949+00:00"
+    },
+    {
+      "id": "e6131e16-0b5f-412a-afb4-ceb516e2abe1",
+      "source": "685185be-fd0d-4c13-94a9-ce7332bf1965",
+      "target": "99061fa8-503b-4776-b67d-961ff0c18ee4",
+      "relation": "LEARNING_ABOUT",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:49:04.808957+00:00"
+    },
+    {
+      "id": "cfeb1638-8096-474a-a0ab-24cccf90aa0c",
+      "source": "685185be-fd0d-4c13-94a9-ce7332bf1965",
+      "target": "e961facb-d7b2-4245-bbeb-2ee900175b70",
+      "relation": "ENROLLED_IN",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:49:04.808963+00:00"
+    },
+    {
+      "id": "487663fd-a258-4a35-a281-5495a2c081bf",
+      "source": "685185be-fd0d-4c13-94a9-ce7332bf1965",
+      "target": "edf17595-c94b-4ad6-9f86-5666fddd6a0f",
+      "relation": "MENTIONED",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:49:14.915460+00:00"
+    },
+    {
+      "id": "8f5ce84c-05ff-42e0-86d8-40609aeac0f8",
+      "source": "edf17595-c94b-4ad6-9f86-5666fddd6a0f",
+      "target": "d1061b9b-e47f-4812-a84d-df2843fe1b9d",
+      "relation": "EMPLOYS",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:49:14.915469+00:00"
+    },
+    {
+      "id": "3ff34f87-e85f-463d-ac0b-d47494ef8fc0",
+      "source": "edf17595-c94b-4ad6-9f86-5666fddd6a0f",
+      "target": "0f9e19ef-f684-4969-8967-d5ba63b50476",
+      "relation": "USING_FOR",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:49:14.915476+00:00"
+    },
+    {
+      "id": "8c642134-04ee-473b-903d-de6f22509b1b",
+      "source": "0f9e19ef-f684-4969-8967-d5ba63b50476",
+      "target": "c6c827f4-26b7-4af6-85f2-1caeb85941a6",
+      "relation": "IMPROVING",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:49:14.915482+00:00"
+    },
+    {
+      "id": "9bf3fdbc-595a-4a02-ba71-591df9e05a5a",
+      "source": "685185be-fd0d-4c13-94a9-ce7332bf1965",
+      "target": "8f54ab07-3752-446a-bc06-8a07884c654e",
+      "relation": "ENGAGED_IN",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:49:26.670701+00:00"
+    },
+    {
+      "id": "c54d99a6-51b8-40c5-b280-9d26d1064f5d",
+      "source": "8f54ab07-3752-446a-bc06-8a07884c654e",
+      "target": "33f4b56c-cd65-4739-8b34-0e12bf455df4",
+      "relation": "RELATED_TO",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:49:26.670711+00:00"
+    },
+    {
+      "id": "be34cb99-47b0-4ded-bd4b-5e7465d2c62a",
+      "source": "8f54ab07-3752-446a-bc06-8a07884c654e",
+      "target": "07b3d872-39bf-4b68-bcaf-a97667d4b7e3",
+      "relation": "RELATED_TO",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:49:26.670717+00:00"
+    },
+    {
+      "id": "1cee049c-4a81-466c-a7cd-4bf9155e507d",
+      "source": "685185be-fd0d-4c13-94a9-ce7332bf1965",
+      "target": "ead355ee-d54c-4c86-b63a-1faea78e333a",
+      "relation": "MET",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:49:40.870901+00:00"
+    },
+    {
+      "id": "ff560a83-cfd1-4d5d-9ba7-3fc29c9342f7",
+      "source": "ead355ee-d54c-4c86-b63a-1faea78e333a",
+      "target": "46099a03-adce-496a-a500-7346febfb210",
+      "relation": "AFFILIATED_WITH",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:49:40.870910+00:00"
+    },
+    {
+      "id": "f4b021fc-a10f-48bd-b5b6-f56666f2fa79",
+      "source": "ead355ee-d54c-4c86-b63a-1faea78e333a",
+      "target": "e2b74834-1588-4621-b6dd-c4ddf5cc0142",
+      "relation": "RESEARCHES",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:49:40.870916+00:00"
+    },
+    {
+      "id": "f3987774-1712-4fdc-97db-3e192e1ba129",
+      "source": "ead355ee-d54c-4c86-b63a-1faea78e333a",
+      "target": "69835d3f-dfbf-4834-bedb-7d8cc45e3f1b",
+      "relation": "RESEARCHES",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:49:40.870922+00:00"
+    },
+    {
+      "id": "13d4e150-b47e-4a7c-9e31-78af6cd29977",
+      "source": "edf17595-c94b-4ad6-9f86-5666fddd6a0f",
+      "target": "322c5d84-01f2-4e28-b63c-01ab4cc776c6",
+      "relation": "WORKED_ON",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:49:50.278198+00:00"
+    },
+    {
+      "id": "0b6baac7-cbd1-4b9e-90e8-a89d9c115c17",
+      "source": "322c5d84-01f2-4e28-b63c-01ab4cc776c6",
+      "target": "d158be04-98fa-4d60-8a22-962a4c3cb31c",
+      "relation": "RELATED_TO",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:49:50.278207+00:00"
+    },
+    {
+      "id": "57c629f7-6d5d-4c3e-8038-73f6310356a9",
+      "source": "685185be-fd0d-4c13-94a9-ce7332bf1965",
+      "target": "40fa5e64-68d6-495a-974b-9782c7cfa4d8",
+      "relation": "PARTICIPATED_IN",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:50:05.759159+00:00"
+    },
+    {
+      "id": "d1ba04c9-dccc-49c7-8568-8f37f40cc1c9",
+      "source": "40fa5e64-68d6-495a-974b-9782c7cfa4d8",
+      "target": "edf17595-c94b-4ad6-9f86-5666fddd6a0f",
+      "relation": "MEETS_WITH",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:50:05.759168+00:00"
+    },
+    {
+      "id": "7716d48d-ab47-49ad-8a12-a80f29d2225e",
+      "source": "40fa5e64-68d6-495a-974b-9782c7cfa4d8",
+      "target": "cfc98e0d-2091-4023-a6be-16782126c25c",
+      "relation": "TOOK_PLACE_AT",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:50:05.759175+00:00"
+    },
+    {
+      "id": "1f960e9e-4142-4c48-8774-54ebb47a7673",
+      "source": "40fa5e64-68d6-495a-974b-9782c7cfa4d8",
+      "target": "7c8d60bb-4197-45ef-9c69-c47e284990d4",
+      "relation": "NEAR_LOCATION",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:50:05.759181+00:00"
+    },
+    {
+      "id": "642d7af1-0264-45af-9eed-8f3452e3ecfb",
+      "source": "40fa5e64-68d6-495a-974b-9782c7cfa4d8",
+      "target": "be6f1065-4b3d-48f4-b088-cf552bfa8d5a",
+      "relation": "DISCUSSED_TOPIC",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:50:05.759187+00:00"
+    },
+    {
+      "id": "d59b25e8-942a-4ad1-a104-7b3ef181756d",
+      "source": "685185be-fd0d-4c13-94a9-ce7332bf1965",
+      "target": "1ce699ef-d2f1-42c9-856f-874bcf8e2062",
+      "relation": "WANTS_TO_UNDERSTAND",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:50:17.550477+00:00"
+    },
+    {
+      "id": "abc69b7c-3bbe-49b0-b191-b7a341ef8159",
+      "source": "685185be-fd0d-4c13-94a9-ce7332bf1965",
+      "target": "6046f5bf-e2e2-44c3-a697-f9470908686b",
+      "relation": "WANTS_TO_UNDERSTAND",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:50:17.550489+00:00"
+    },
+    {
+      "id": "31a8f368-b67d-4ece-8629-0b57b465aa4e",
+      "source": "685185be-fd0d-4c13-94a9-ce7332bf1965",
+      "target": "02c397fa-4974-4083-a187-4ffd6d5165e5",
+      "relation": "INTERESTED_IN",
+      "weight": 1.0,
+      "created_at": "2026-04-04T21:50:17.550496+00:00"
+    }
+  ],
+  "metadata": {
+    "created_at": "2026-04-04T19:55:28.309400+00:00",
+    "last_updated_at": "2026-04-04T21:50:17.550505+00:00",
+    "total_interactions": 10
+  }
+}

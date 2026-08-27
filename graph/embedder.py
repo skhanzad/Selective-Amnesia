@@ -20,6 +20,10 @@ def get_embeddings(texts: list[str]) -> list[list[float]]:
 
 
 def cosine_similarity(a: list[float], b: list[float]) -> float:
-    a = np.asarray(a)
-    b = np.asarray(b)
-    return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b)))
+    a_arr = np.asarray(a)
+    b_arr = np.asarray(b)
+    norm_a = np.linalg.norm(a_arr)
+    norm_b = np.linalg.norm(b_arr)
+    if norm_a == 0.0 or norm_b == 0.0:
+        return 0.0
+    return float(np.dot(a_arr, b_arr) / (norm_a * norm_b))

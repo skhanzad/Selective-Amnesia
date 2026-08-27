@@ -58,7 +58,9 @@ def _pipeline(
             build_descriptor(e.get("label", ""), e.get("title", ""), e.get("content"))
             for e in retrieval_entities
         ]
-        retrieval_vectors = get_embeddings(retrieval_descriptors) if retrieval_descriptors else []
+        retrieval_vectors = (
+            get_embeddings(retrieval_descriptors) if retrieval_descriptors else []
+        )
         retrieval_candidates = [search_similar(graph, v) for v in retrieval_vectors]
 
         title_index = graph.get("title_index", {})
@@ -68,18 +70,27 @@ def _pipeline(
             if e.get("title", "").lower().strip() in title_index
         ]
 
-        root_ids = rank_candidates(retrieval_candidates, graph=graph, extra_ids=title_hits)
+        root_ids = rank_candidates(
+            retrieval_candidates, graph=graph, extra_ids=title_hits
+        )
         adj = build_adjacency(graph)
         subgraph_nodes, subgraph_edges = collect_subgraph(graph, adj, root_ids)
         update_access(graph, set(subgraph_nodes.keys()), now=session_date)
-        context_str = serialize_subgraph(subgraph_nodes, subgraph_edges, full_graph=graph) if subgraph_nodes else ""
+        context_str = (
+            serialize_subgraph(subgraph_nodes, subgraph_edges, full_graph=graph)
+            if subgraph_nodes
+            else ""
+        )
         return context_str, graph
 
     if extraction is None:
         extraction = extract(user_message)
 
     for node_data in extraction.get("nodes", {}).values():
-        if node_data.get("label") == "Person" and node_data.get("title", "").lower() == "user":
+        if (
+            node_data.get("label") == "Person"
+            and node_data.get("title", "").lower() == "user"
+        ):
             node_data["content"] = "The user"
 
     session_id = create_session(graph, created_at=session_date)
@@ -137,7 +148,9 @@ def _pipeline(
             build_descriptor(e.get("label", ""), e.get("title", ""), e.get("content"))
             for e in retrieval_entities
         ]
-        retrieval_vectors = get_embeddings(retrieval_descriptors) if retrieval_descriptors else []
+        retrieval_vectors = (
+            get_embeddings(retrieval_descriptors) if retrieval_descriptors else []
+        )
         retrieval_candidates = [search_similar(graph, v) for v in retrieval_vectors]
 
         title_index = graph.get("title_index", {})
@@ -147,13 +160,21 @@ def _pipeline(
             if e.get("title", "").lower().strip() in title_index
         ]
 
-        root_ids = rank_candidates(retrieval_candidates, graph=graph, extra_ids=title_hits)
+        root_ids = rank_candidates(
+            retrieval_candidates, graph=graph, extra_ids=title_hits
+        )
         adj = build_adjacency(graph)
         subgraph_nodes, subgraph_edges = collect_subgraph(graph, adj, root_ids)
         update_access(graph, set(subgraph_nodes.keys()), now=session_date)
-        context_str = serialize_subgraph(subgraph_nodes, subgraph_edges, full_graph=graph) if subgraph_nodes else ""
+        context_str = (
+            serialize_subgraph(subgraph_nodes, subgraph_edges, full_graph=graph)
+            if subgraph_nodes
+            else ""
+        )
 
-    write_nodes(graph, extraction, temp_to_real, vectors, session_id, session_created_at)
+    write_nodes(
+        graph, extraction, temp_to_real, vectors, session_id, session_created_at
+    )
     write_edges(graph, extraction, temp_to_real, session_id, session_created_at)
     increment_prompt_count(graph, session_id)
 
@@ -190,7 +211,8 @@ def run_in_memory(
 ) -> tuple[str, dict]:
     """Run pipeline on a provided in-memory graph dict without touching disk."""
     return _pipeline(
-        user_message, graph,
+        user_message,
+        graph,
         ingest_only=ingest_only,
         retrieve_only=retrieve_only,
         extraction=extraction,
@@ -202,6 +224,8 @@ def run_in_memory(
 if __name__ == "__main__":
     message = input("Enter message: ")
     context, updated_graph = run(message)
-    print(f"\nGraph: {len(updated_graph['nodes'])} nodes, {len(updated_graph['edges'])} edges")
+    print(
+        f"\nGraph: {len(updated_graph['nodes'])} nodes, {len(updated_graph['edges'])} edges"
+    )
     if context:
         print(f"\n{context}")
