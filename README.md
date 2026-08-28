@@ -1,4 +1,4 @@
-# Selective Forgetting: A Graph-Based Memory Framework for Long-Term LLM Agents
+# Selective Amnesia: A Graph-Based Memory Framework for Long-Term LLM Agents
 
 A knowledge graph system with a forgetting module for augmenting LLM responses with persistent user memory, evaluated against the LongMemEval benchmark.
 
